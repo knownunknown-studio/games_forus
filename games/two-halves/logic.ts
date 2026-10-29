@@ -44,7 +44,9 @@ export type Action =
   | { type: 'light'; module: string; color: Light }
   | { type: 'dial'; module: string; dial: number; dir: 1 | -1 }
   | { type: 'pass'; tool: ToolId }
-  | { type: 'pause' | 'resume' | 'hint' }
+  | { type: 'pause' }
+  | { type: 'resume' }
+  | { type: 'hint' }
   | { type: 'notes'; text: string };
 
 export const RULES: Record<Difficulty, { perSide: number; secs: number; strikes: number }> = {
