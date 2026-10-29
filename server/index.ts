@@ -1,6 +1,7 @@
 // HTTP server for the built client plus the game WebSocket at /ws.
 import { readFile } from 'node:fs/promises';
 import { createServer } from 'node:http';
+import { networkInterfaces } from 'node:os';
 import { extname, join, normalize } from 'node:path';
 import { WebSocketServer } from 'ws';
 import { handle, leave, sweep } from './rooms';
@@ -37,4 +38,10 @@ wss.on('connection', (ws) => {
 });
 
 setInterval(sweep, 250);
-server.listen(PORT, () => console.log(`Two Halves server on http://localhost:${PORT}`));
+server.listen(PORT, () => {
+  console.log(`Two Halves is running on http://localhost:${PORT}`);
+  // Addresses a partner on the same Wi-Fi can open, no internet needed.
+  for (const nets of Object.values(networkInterfaces())) {
+    for (const n of nets ?? []) if (n.family === 'IPv4' && !n.internal) console.log(`Same Wi-Fi:  http://${n.address}:${PORT}`);
+  }
+});
