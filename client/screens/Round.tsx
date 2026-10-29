@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { Action, GameView } from '../../games/two-halves/logic';
 import type { RoomView } from '../../shared/protocol';
+import { Coach, deviceTip, manualTip } from '../game/Coach';
 import { Device, Toolbox } from '../game/Device';
 import { Manual } from '../game/Manual';
 import { useNow, type Send } from '../net';
@@ -17,6 +18,7 @@ export function Round({ room, game, at, send }: { room: RoomView; game: GameView
   const [shake, setShake] = useState(false);
   const strikes = useRef(game.strikes);
   const act = (action: Action) => send({ t: 'act', action });
+  const tutorial = game.difficulty === 'tutorial';
   const since = game.paused ? 0 : now - at;
   const left = Math.max(0, game.timeLeft - since);
 
@@ -60,9 +62,11 @@ export function Round({ room, game, at, send }: { room: RoomView; game: GameView
 
       <div className="columns">
         <section className={`col ${tab === 'device' ? 'show' : ''}`} aria-label="Your half of the device">
+          {tutorial && <Coach tip={deviceTip(game)} />}
           <Device game={game} act={act} now={now} />
         </section>
         <section className={`col ${tab === 'manual' ? 'show' : ''}`} aria-label="Manual for your partner's half">
+          {tutorial && <Coach tip={manualTip(game)} />}
           <Manual game={game} />
         </section>
       </div>

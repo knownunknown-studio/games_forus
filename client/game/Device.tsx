@@ -123,7 +123,7 @@ function FaceView({ m, face: f, has, act, now }: { m: ModuleView; face: Face; ha
             {f.letters.map((l, i) => (
               <div className="dial" key={i}>
                 <button disabled={off} aria-label={`Dial ${i + 1} up`} onClick={() => act({ type: 'dial', module: id, dial: i, dir: -1 })}>▲</button>
-                <b aria-live="polite">{l}</b>
+                <b key={l} aria-live="polite">{l}</b>
                 <button disabled={off} aria-label={`Dial ${i + 1} down`} onClick={() => act({ type: 'dial', module: id, dial: i, dir: 1 })}>▼</button>
               </div>
             ))}

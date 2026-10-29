@@ -3,7 +3,12 @@ import type { Difficulty } from '../../games/two-halves/logic';
 import type { RoomView } from '../../shared/protocol';
 import type { Send } from '../net';
 
-const LEVELS: [Difficulty, string][] = [['easy', 'Easy'], ['normal', 'Normal'], ['hard', 'Hard']];
+const LEVELS: [Difficulty, string, string][] = [
+  ['tutorial', 'Tutorial', 'A guided first round. One module each, 10 minutes, 5 strikes, with tips on screen.'],
+  ['easy', 'Easy', 'One module each. 5 minutes, 3 strikes.'],
+  ['normal', 'Normal', 'Two modules each. 5 minutes, 3 strikes.'],
+  ['hard', 'Hard', 'Three modules each. 6 minutes, only 2 strikes.'],
+];
 
 export function Lobby({ room, send, leave }: { room: RoomView; send: Send; leave: () => void }) {
   const [copied, setCopied] = useState(false);
@@ -26,7 +31,7 @@ export function Lobby({ room, send, leave }: { room: RoomView; send: Send; leave
       <section className="card stack center-items">
         <span className="label">Share this code</span>
         <div className="code" aria-label={`Room code ${room.code.split('').join(' ')}`}>
-          {[...room.code].map((c, i) => <span key={i}>{c}</span>)}
+          {[...room.code].map((c, i) => <span key={i} style={{ animationDelay: `${i * 90}ms` }}>{c}</span>)}
         </div>
         <button className="btn full" onClick={copy}>{copied ? 'Link copied' : 'Copy invite link'}</button>
       </section>
@@ -53,6 +58,7 @@ export function Lobby({ room, send, leave }: { room: RoomView; send: Send; leave
               onClick={() => send({ t: 'difficulty', difficulty: d })}>{label}</button>
           ))}
         </div>
+        <p className="muted" key={room.difficulty}>{LEVELS.find(([d]) => d === room.difficulty)?.[2]}</p>
       </section>
 
       <div className="grow" />

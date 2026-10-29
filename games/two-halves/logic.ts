@@ -6,7 +6,7 @@ import {
 } from './manual';
 
 export type Half = 'A' | 'B';
-export type Difficulty = 'easy' | 'normal' | 'hard';
+export type Difficulty = 'tutorial' | 'easy' | 'normal' | 'hard';
 
 type Base = { id: string; side: Half; screws: number; solvedAt: number | null };
 export type Wires = Base & { type: 'wires'; wires: { color: WireColor; mark: boolean }[]; cut: boolean[]; uv: boolean };
@@ -50,6 +50,7 @@ export type Action =
   | { type: 'notes'; text: string };
 
 export const RULES: Record<Difficulty, { perSide: number; secs: number; strikes: number }> = {
+  tutorial: { perSide: 1, secs: 600, strikes: 5 },
   easy: { perSide: 1, secs: 300, strikes: 3 },
   normal: { perSide: 2, secs: 300, strikes: 3 },
   hard: { perSide: 3, secs: 360, strikes: 2 },
@@ -66,10 +67,13 @@ export function generate(seed: string, difficulty: Difficulty, now: number): Gam
   const cfg = RULES[difficulty];
   const L = [...'ABCDEFGHJKLMNPRSTUVWXZ'], D = [...'0123456789'];
   const serial = `${pick(r, L)}${pick(r, L)}-${[D, L, D, D, L].map((s) => pick(r, s)).join('')}`;
-  const types: ModuleType[] = shuffle(r, MODULE_TYPES);
+  // The tutorial always deals A the wires and B the keypad, and splits the tools so both have to pass something.
+  const tutorial = difficulty === 'tutorial';
+  const types: ModuleType[] = tutorial ? ['wires', 'keypad'] : shuffle(r, MODULE_TYPES);
   while (types.length < cfg.perSide * 2) types.push(pick(r, MODULE_TYPES));
   const modules = types.slice(0, cfg.perSide * 2).map((t, i) => makeModule(r, t, `m${i}`, i % 2 ? 'B' : 'A'));
-  const tools = shuffle(r, TOOLS);
+  if (tutorial) modules.forEach((m) => { m.screws = 2; if (m.type === 'wires') m.wires.forEach((w) => (w.mark = false)); });
+  const tools = tutorial ? (['screwdriver', 'multimeter', 'cutters', 'uv'] as const) : shuffle(r, TOOLS);
   return {
     difficulty, serial, batteries: int(r, 0, 4), modules,
     tools: Object.fromEntries(tools.map((t, i) => [t, { at: i < 2 ? 'A' : 'B', arrives: 0 }])) as Game['tools'],

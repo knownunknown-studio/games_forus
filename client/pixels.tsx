@@ -31,5 +31,7 @@ const BOMB = ['...........Y..O.', '..........O.Y...', '.........K..O...', '.....
 export const BOMB_A = BOMB.map((r) => r.slice(0, 8).replace(/K/g, 'R'));
 export const BOMB_B = BOMB.map((r, i) => (i < 5 ? r.slice(8) : r.slice(8).replace(/K/g, 'B')));
 
-export const HEART = ['.RRR..BBB.', 'RWRRRBBBBB', 'RRRRRBBBBB', 'RRRRRBBBBB', '.RRRRBBBB.', '..RRRBBB..', '...RRBB...', '....RB....'];
+export const COACH = ['...KKKK...', '..KWWWWK..', '.KWKWWKWK.', '.KWWWWWWK.', '.KWRRRRWK.', '..KKKKKK..', '...KYYK...', '..KYYYYK..', '..KYKKYK..', '..KK..KK..'];
+
+export const HEART =['.RRR..BBB.', 'RWRRRBBBBB', 'RRRRRBBBBB', 'RRRRRBBBBB', '.RRRRBBBB.', '..RRRBBB..', '...RRBB...', '....RB....'];
 export const BOOM = ['.....Y......', '..Y..O..Y...', '...OOROO....', '.YORRRRROY..', '..ORRYYRRO..', 'YORRYWWYRROY', '..ORRYYRRO..', '.YORRRRROY..', '...OOROO....', '..Y..O..Y...', '.....Y......'];

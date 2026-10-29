@@ -32,6 +32,16 @@ describe('generation', () => {
     }
   });
 
+  it('deals a fixed, gentle tutorial that makes both players pass a tool', () => {
+    const g = generate('any', 'tutorial', T0);
+    expect(g.modules.map((m) => [m.side, m.type])).toEqual([['A', 'wires'], ['B', 'keypad']]);
+    expect(g.tools.screwdriver.at).toBe('A');
+    expect(g.tools.cutters.at).toBe('B');
+    expect(g.maxStrikes).toBe(5);
+    g.modules.forEach((m) => solveModule(g, m));
+    expect(g.status).toBe('won');
+  });
+
   it('always deals keypads and word locks with exactly one answer', () => {
     for (let i = 0; i < 300; i++) {
       for (const m of generate(`seed${i}`, 'hard', T0).modules) {
